@@ -10,14 +10,20 @@ def get_gdp() -> pd.Series:
                      dtype={"V4_1": float},
                      parse_dates=["Time"],
                      )
-    dfuk = df[df['nuts'] == 'UK0']
-    dfukat = dfuk[dfuk['sic-unofficial'] == 'A--T']
-    dfukatgr = dfukat[dfukat['GrowthRate'] == 'Quarterly index']
-    df = dfukatgr.iloc[:, [0, 1]]
+    df = df[df['nuts'] == 'UK0']
+    df = df[df['sic-unofficial'] == 'A--T']
+    df = df[df['GrowthRate'] == 'Quarterly index']
+    df = df.iloc[:, [0, 1]]
     df.rename(columns={df.columns[1]: "date"}, inplace=True)
     df.rename(columns={df.columns[0]: "GDP"}, inplace=True)
     df.set_index("date", inplace=True)
     df.sort_index(ascending=True, inplace=True)
     s = df.squeeze()
 
+    return s
+
+def get_infl_from_gdp( data: pd.Series) ->pd.Series:
+    s = data.pct_change().round(4)
+    s = s.dropna()
+    s.name = "Inflation"
     return s
