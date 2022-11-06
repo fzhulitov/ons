@@ -22,8 +22,3 @@ def get_gdp() -> pd.Series:
 
     return s
 
-def get_infl_from_gdp( data: pd.Series) ->pd.Series:
-    s = data.pct_change().round(4)
-    s = s.dropna()
-    s.name = "Inflation"
-    return s
